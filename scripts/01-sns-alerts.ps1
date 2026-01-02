@@ -1,5 +1,5 @@
 # 01-sns-alerts.ps1
-# Creates SNS topic and subscribes email for alerts
+# Creates the SNS topic and subscribes email for alerts
 
 if (-not $env:AWS_REGION) { $env:AWS_REGION="us-east-2" }
 Write-Host "Region:" $env:AWS_REGION
@@ -19,6 +19,6 @@ Write-Host "✅ Subscription created. IMPORTANT: open your email and click CONFI
 Write-Host "Topic:" $TOPIC_NAME
 Write-Host "Email:" $EMAIL
 
-# Save topic arn for later scripts
+# This saves topic arn for later scripts
 $TOPIC_ARN.Trim() | Out-File -Encoding ascii .\scripts\.topic_arn.txt
 

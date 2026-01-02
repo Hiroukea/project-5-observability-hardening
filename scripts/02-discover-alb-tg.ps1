@@ -1,5 +1,5 @@
 # 02-discover-alb-tg.ps1
-# Discovers an ALB and one target group, saves ARNs + dimension strings.
+# This Discovers an ALB and one target group and also saves ARNs + dimension strings.
 
 $ErrorActionPreference = "Stop"
 
@@ -10,7 +10,7 @@ if (-not $lbs) { throw "No load balancers found in this region." }
 Write-Host "Load balancers found:"
 $lbs | Format-Table Name,Type,DNS -AutoSize
 
-# Pick the first Application Load Balancer that looks like terraform ('tf-' prefix) if possible
+
 $alb = $lbs | Where-Object { $_.Type -eq "application" -and $_.Name -like "tf-*" } | Select-Object -First 1
 if (-not $alb) { $alb = $lbs | Where-Object { $_.Type -eq "application" } | Select-Object -First 1 }
 
@@ -24,7 +24,7 @@ Write-Host "✅ Selected ALB:" $alb.Name
 Write-Host "ALB_DNS:" $ALB_DNS
 Write-Host "ALB_ARN:" $ALB_ARN
 
-# Get target groups for that ALB
+# this gets the target groups for the ALB
 $tgs = aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN --query "TargetGroups[].{Name:TargetGroupName,Arn:TargetGroupArn,Port:Port,Proto:Protocol}" --output json | ConvertFrom-Json
 if (-not $tgs) { throw "No target groups found for selected ALB." }
 
@@ -32,15 +32,15 @@ Write-Host ""
 Write-Host "Target groups for ALB:"
 $tgs | Format-Table Name,Proto,Port -AutoSize
 
-# Pick the first TG
+# This picks the first TG
 $tg = $tgs | Select-Object -First 1
 $TG_ARN = $tg.Arn
 
-# CloudWatch dimension strings (required formats)
+# CloudWatch dimension strings 
 $ALB_DIM = ($ALB_ARN -split "loadbalancer/")[1]
 $TG_DIM  = ($TG_ARN  -split "targetgroup/")[1]
 
-# Save for later scripts
+# And thern we save for later scripts
 $ALB_ARN | Out-File -Encoding ascii .\scripts\.alb_arn.txt
 $TG_ARN  | Out-File -Encoding ascii .\scripts\.tg_arn.txt
 $ALB_DIM | Out-File -Encoding ascii .\scripts\.alb_dim.txt

@@ -1,0 +1,1 @@
+arn:aws:sns:us-east-2:476170686911:proj5-alerts

@@ -1,0 +1,1 @@
+arn:aws:elasticloadbalancing:us-east-2:476170686911:loadbalancer/app/project1alb/65a31925bad1317d
